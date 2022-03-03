@@ -28,7 +28,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 def GetUsers(requst):
     Users=User.objects.all()
     DataSerializer=UserSerializer(Users,many=True)
-    print(DataSerializer.data)
+    # print(DataSerializer.data)
 
     return Response(DataSerializer.data,status=status.HTTP_200_OK)
 
