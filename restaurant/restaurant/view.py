@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
 
+# login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -23,29 +23,32 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+# get all users
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def GetUsers(requst):
     Users=User.objects.all()
     DataSerializer=UserSerializer(Users,many=True)
-    # print(DataSerializer.data)
+    print(requst.user.profile.date)
 
     return Response(DataSerializer.data,status=status.HTTP_200_OK)
 
-
+# all routes
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def GetRoutes(requst):
     Routes={
-        'routes/':'see all possable routes',
-        'users/':"get all users ",
+        '':'welcome',
+        'api/routes/':'see all possable routes',
+        'api/users/':"get all users ",
         'admin/':"go to admin panel",
 
     }
 
     return Response(Routes,status=status.HTTP_200_OK)
 
-a
+
+# home
 @api_view(['GET'])
 def GetHome(requst):
     msg={
