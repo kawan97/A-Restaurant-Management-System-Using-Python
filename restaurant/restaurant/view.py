@@ -44,3 +44,12 @@ def GetRoutes(requst):
     }
 
     return Response(Routes,status=status.HTTP_200_OK)
+
+a
+@api_view(['GET'])
+def GetHome(requst):
+    msg={
+        'home':'welcome to home',
+    }
+
+    return Response(msg,status=status.HTTP_200_OK)

@@ -7,9 +7,10 @@ from . import view
 #     TokenObtainPairView,
 # )
 urlpatterns = [
+     path('', view.GetHome),
     path('api/login/', view.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('admin/', admin.site.urls),
-    path('routes/', view.GetRoutes),
-    path('users/', view.GetUsers),
+    path('api/routes/', view.GetRoutes),
+    path('api/users/', view.GetUsers),
 
 ]
