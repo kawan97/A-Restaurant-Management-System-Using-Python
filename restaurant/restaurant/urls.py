@@ -12,5 +12,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/routes/', view.GetRoutes),
     path('api/users/', view.GetUsers),
+    path('api/items/', view.GetItem),
 
 ]

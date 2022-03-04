@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from app.models import Profile
+from app.models import Profile,Item,SubItem
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,3 +13,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [ 'username','profile']
 
+class SubItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubItem
+        fields ='__all__'
+
+class ItemSerializer(serializers.ModelSerializer):
+    subitem=SubItemSerializer(many=True,read_only=True)
+    class Meta:
+        model = Item
+        fields = [ 'name','subitem']
