@@ -50,7 +50,8 @@ def GetRoutes(requst):
     Routes={
         '':'welcome',
         'api/routes/':'see all possable routes',
-        'api/users/':"get all users ",
+        'api/users/':"see all users ",
+        'api/items/':"see all items",
         'admin/':"go to admin panel",
 
     }
