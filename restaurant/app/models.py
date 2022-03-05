@@ -2,9 +2,19 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 
+PROFILE_STATUS_CHOICES = (
+    ('active','active'),
+    ('deactivate', 'deactivate'),
+)
+PROFILE_ROLE_CHOICES = (
+    ('admin','admin'),
+    ('chef', 'chef'),
+    ('captain', 'captain'),
+    ('waiter', 'waiter'),
+)
 class Profile(models.Model):
-    status=models.CharField(max_length=200,default='active')
-    user_role = models.CharField(max_length=200)
+    status=models.CharField(max_length=200,choices=PROFILE_STATUS_CHOICES,default='active')
+    user_role = models.CharField(max_length=200,choices=PROFILE_ROLE_CHOICES,null=False, blank=False)
     User=models.OneToOneField(User,on_delete=models.CASCADE,null=True, blank=True, related_name='profile')
     user_salary=models.CharField(max_length=64)
     date = models.DateTimeField(auto_now_add=True, blank=True)
@@ -27,21 +37,41 @@ class SubItem(models.Model):
     class Meta:
         ordering = ['Item']
 
+
+TABLE_STATUS_CHOICES = (
+    ('empty','empty'),
+    ('reserved', 'reserved'),
+)
 class Table(models.Model):
     name = models.CharField(max_length=200)
-    status=models.CharField(max_length=200,null=True, blank=True)
+    status=models.CharField(max_length=200,null=True, blank=True,choices=TABLE_STATUS_CHOICES)
     def __str__(self):
         return self.name
+
+
+ORDER_STATUS_CHOICES = (
+    ('payed','payed'),
+    ('notpayed', 'notpayed'),
+)
 class Order(models.Model):
-    status=models.CharField(max_length=200,default='notpayed')
+    status=models.CharField(max_length=200,default='notpayed',choices=ORDER_STATUS_CHOICES)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='orderuser')
     Table=models.ForeignKey(Table,on_delete=models.CASCADE,null=True, blank=True, related_name='ordertable')
     def __str__(self):
         return 'orderid='+str(self.id)+' on table'+self.Table.name
 
+SUBORDER_STATUS_CHOICES = (
+    ('ordering','ordering'),
+    ('sendingtochef', 'sendingtochef'),
+    ('chefaccepting', 'chefaccepting'),
+    ('orderisready', 'orderisready'),
+    ('waiteraccept', 'waiteraccept'),
+    ('waiterserving', 'waiterserving'),
+    ('suborderclosed', 'suborderclosed'),
+)
 class SubOrder(models.Model):
-    status=models.CharField(max_length=200,default='ordering')
+    status=models.CharField(max_length=200,default='ordering',choices=SUBORDER_STATUS_CHOICES)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='suborderuser')
     Table=models.ForeignKey(Table,on_delete=models.CASCADE,null=True, blank=True, related_name='subordertable')
@@ -70,5 +100,15 @@ class Feedback(models.Model):
     text = models.TextField(blank=True, null=True)
     def __str__(self):
         return 'OrderId ='+str(self.Order.id)
+    class Meta:
+        ordering = ['date']
+
+class Action(models.Model):
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    SubOrder=models.ForeignKey(SubOrder,on_delete=models.CASCADE,null=True, blank=True, related_name='actionsuborder')
+    User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='actionuser')
+    type=models.CharField(max_length=200)
+    def __str__(self):
+        return 'SubOrder ='+str(self.SubOrder.id)+' ,type='+self.type
     class Meta:
         ordering = ['date']
