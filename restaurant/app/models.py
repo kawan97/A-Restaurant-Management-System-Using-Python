@@ -32,6 +32,7 @@ class Table(models.Model):
     def __str__(self):
         return self.name
 class Order(models.Model):
+    status=models.CharField(max_length=200,default='notpayed')
     date = models.DateTimeField(auto_now_add=True, blank=True)
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='orderuser')
     Table=models.ForeignKey(Table,on_delete=models.CASCADE,null=True, blank=True, related_name='ordertable')
@@ -39,6 +40,7 @@ class Order(models.Model):
         return 'orderid='+str(self.id)+' on table'+self.Table.name
 
 class SubOrder(models.Model):
+    status=models.CharField(max_length=200,default='ordering')
     date = models.DateTimeField(auto_now_add=True, blank=True)
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='suborderuser')
     Table=models.ForeignKey(Table,on_delete=models.CASCADE,null=True, blank=True, related_name='subordertable')
@@ -55,4 +57,6 @@ class OrderItem(models.Model):
     SubItem=models.ForeignKey(SubItem,on_delete=models.CASCADE,null=True, blank=True, related_name='orderitemsubitem')
 
     def __str__(self):
-        return 'OrderItem ='+str(self.id)+' SubItem:'+self.SubItem.name
+        return 'OrderItem ='+str(self.id)+' suborder ='+str(self.SubOrder.id)+' SubItem:'+self.SubItem.name
+    class Meta:
+        ordering = ['SubOrder']
