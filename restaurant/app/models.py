@@ -137,16 +137,6 @@ class Payment(models.Model):
     class Meta:
         ordering = ['date']
 
-class Payment(models.Model):
-    date = models.DateTimeField(auto_now_add=True, blank=True)
-    Order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentorder')
-    User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentuser')
-    total=models.CharField(max_length=200,null=False, blank=False)
-    def __str__(self):
-        return 'payment ='+str(self.id)+' ,orderid='+str(self.Order.id)
-    class Meta:
-        ordering = ['date']
-
 class Equipment(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True)
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='equipmentuser')
