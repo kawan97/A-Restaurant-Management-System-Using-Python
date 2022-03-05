@@ -13,5 +13,6 @@ urlpatterns = [
     path('api/routes/', view.GetRoutes),
     path('api/users/', view.GetUsers),
     path('api/items/', view.GetItem),
+    path('api/items/<str:pk>', view.GetOneItem),
 
 ]

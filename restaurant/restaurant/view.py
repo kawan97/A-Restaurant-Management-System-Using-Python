@@ -36,13 +36,29 @@ def GetUsers(requst):
 
 # get all Items
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def GetItem(requst):
-    items=Item.objects.all()
-    DataSerializer=ItemSerializer(items,many=True)
-    # print(requst.user.profile.date)
+    try:
+        items=Item.objects.all()
+        DataSerializer=ItemSerializer(items,many=True)
+        # print(requst.user.profile.date)
+        return Response(DataSerializer.data,status=status.HTTP_200_OK)
+    except:
+         return Response({'detail':'sorry we havent any item'},status=status.HTTP_204_NO_CONTENT)
+  
 
-    return Response(DataSerializer.data,status=status.HTTP_200_OK)
+# get one Items
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetOneItem(requst,pk):
+    try:
+        items=Item.objects.get(id=pk)
+        DataSerializer=ItemSerializer(items,many=False)
+        # print(requst.user.profile.date)
+        return Response(DataSerializer.data,status=status.HTTP_200_OK)
+    except:
+         return Response({'detail':'sorry we havent any item'},status=status.HTTP_204_NO_CONTENT)
+
 # all routes
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -52,6 +68,7 @@ def GetRoutes(requst):
         'api/routes/':'see all possable routes',
         'api/users/':"see all users ",
         'api/items/':"see all items",
+         'api/items/<str:pk>':"see one item",
         'admin/':"go to admin panel",
 
     }
