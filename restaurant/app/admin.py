@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, SubItem,Item,Table,Order,SubOrder,OrderItem
+from .models import Profile, SubItem,Item,Table,Order,SubOrder,OrderItem,Feedback
 # Register your models here.
 
 admin.site.register(Profile)
@@ -9,3 +9,4 @@ admin.site.register(Table)
 admin.site.register(Order)
 admin.site.register(SubOrder)
 admin.site.register(OrderItem)
+admin.site.register(Feedback)

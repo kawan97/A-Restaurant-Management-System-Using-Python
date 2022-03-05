@@ -61,3 +61,14 @@ class OrderItem(models.Model):
         return 'OrderItem ='+str(self.id)+' suborder ='+str(self.SubOrder.id)+' SubItem:'+self.SubItem.name
     class Meta:
         ordering = ['SubOrder']
+
+class Feedback(models.Model):
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    Order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='feedbackorder')
+    status=models.CharField(max_length=200,default='notanswered')
+    key=models.CharField(max_length=200)
+    text = models.TextField(blank=True, null=True)
+    def __str__(self):
+        return 'OrderId ='+str(self.Order.id)
+    class Meta:
+        ordering = ['date']
