@@ -137,6 +137,7 @@ class Payment(models.Model):
     class Meta:
         ordering = ['date']
 
+
 class Equipment(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True)
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='equipmentuser')

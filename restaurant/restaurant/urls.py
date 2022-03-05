@@ -12,7 +12,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/routes/', view.GetRoutes),
     path('api/users/', view.GetUsers),
-    path('api/items/', view.GetItem),
-    path('api/items/<str:pk>', view.GetOneItem),
+    path('api/items/', view.GetItems),
+    path('api/items/<str:pk>', view.GetItem),
+    path('api/orders/', view.GetOrders),
+
 
 ]

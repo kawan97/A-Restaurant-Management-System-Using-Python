@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .serializers import ItemSerializer, UserSerializer
-from app.models import Item
+from .serializers import ItemSerializer, UserSerializer,OrderSerializer
+from app.models import Item,Order
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -37,7 +37,7 @@ def GetUsers(requst):
 # get all Items
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def GetItem(requst):
+def GetItems(requst):
     try:
         items=Item.objects.all()
         DataSerializer=ItemSerializer(items,many=True)
@@ -50,7 +50,7 @@ def GetItem(requst):
 # get one Items
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def GetOneItem(requst,pk):
+def GetItem(requst,pk):
     try:
         items=Item.objects.get(id=pk)
         DataSerializer=ItemSerializer(items,many=False)
@@ -59,6 +59,18 @@ def GetOneItem(requst,pk):
     except:
          return Response({'detail':'sorry we havent any item'},status=status.HTTP_204_NO_CONTENT)
 
+# get orders
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetOrders(requst):
+    try:
+        orders=Order.objects.all().prefetch_related('suborderorder')
+        print(orders)
+        DataSerializer=OrderSerializer(orders,many=True)
+        return Response(DataSerializer.data,status=status.HTTP_200_OK)
+    except:
+        return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
+ 
 # all routes
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
