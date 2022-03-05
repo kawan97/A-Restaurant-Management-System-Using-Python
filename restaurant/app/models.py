@@ -92,10 +92,15 @@ class OrderItem(models.Model):
     class Meta:
         ordering = ['SubOrder']
 
+
+FEEDBACK_STATUS_CHOICES = (
+    ('notanswered','notanswered'),
+    ('answered', 'answered'),
+)
 class Feedback(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True)
     Order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='feedbackorder')
-    status=models.CharField(max_length=200,default='notanswered')
+    status=models.CharField(max_length=200,default='notanswered',choices=FEEDBACK_STATUS_CHOICES)
     key=models.CharField(max_length=200)
     text = models.TextField(blank=True, null=True)
     def __str__(self):
@@ -103,12 +108,52 @@ class Feedback(models.Model):
     class Meta:
         ordering = ['date']
 
+ACTION_TYPE_CHOICES = (
+    ('ordering','ordering'),
+    ('sendingtochef', 'sendingtochef'),
+    ('chefaccepting', 'chefaccepting'),
+    ('orderisready', 'orderisready'),
+    ('waiteraccept', 'waiteraccept'),
+    ('waiterserving', 'waiterserving'),
+    ('suborderclosed', 'suborderclosed'),
+)
 class Action(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True)
     SubOrder=models.ForeignKey(SubOrder,on_delete=models.CASCADE,null=True, blank=True, related_name='actionsuborder')
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='actionuser')
-    type=models.CharField(max_length=200)
+    type=models.CharField(max_length=200,null=False, blank=False,choices=ACTION_TYPE_CHOICES)
     def __str__(self):
         return 'SubOrder ='+str(self.SubOrder.id)+' ,type='+self.type
+    class Meta:
+        ordering = ['date']
+
+class Payment(models.Model):
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    Order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentorder')
+    User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentuser')
+    total=models.CharField(max_length=200,null=False, blank=False)
+    def __str__(self):
+        return 'payment ='+str(self.id)+' ,orderid='+self.Order.id
+    class Meta:
+        ordering = ['date']
+
+class Payment(models.Model):
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    Order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentorder')
+    User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentuser')
+    total=models.CharField(max_length=200,null=False, blank=False)
+    def __str__(self):
+        return 'payment ='+str(self.id)+' ,orderid='+self.Order.id
+    class Meta:
+        ordering = ['date']
+
+class Equipment(models.Model):
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='equipmentuser')
+    total=models.CharField(max_length=200,null=False, blank=False)
+    name = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return 'name='+str(self.name)+' ,equipment id='+self.id
     class Meta:
         ordering = ['date']
