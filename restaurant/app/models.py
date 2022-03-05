@@ -133,7 +133,7 @@ class Payment(models.Model):
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentuser')
     total=models.CharField(max_length=200,null=False, blank=False)
     def __str__(self):
-        return 'payment ='+str(self.id)+' ,orderid='+self.Order.id
+        return 'payment ='+str(self.id)+' ,orderid='+str(self.Order.id)
     class Meta:
         ordering = ['date']
 
@@ -143,7 +143,7 @@ class Payment(models.Model):
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentuser')
     total=models.CharField(max_length=200,null=False, blank=False)
     def __str__(self):
-        return 'payment ='+str(self.id)+' ,orderid='+self.Order.id
+        return 'payment ='+str(self.id)+' ,orderid='+str(self.Order.id)
     class Meta:
         ordering = ['date']
 
@@ -154,6 +154,6 @@ class Equipment(models.Model):
     name = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return 'name='+str(self.name)+' ,equipment id='+self.id
+        return 'name='+self.User.username+' ,equipment id='+str(self.id)
     class Meta:
         ordering = ['date']
