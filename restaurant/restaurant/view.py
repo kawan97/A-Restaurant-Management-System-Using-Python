@@ -72,6 +72,23 @@ def GetOrders(requst):
         return Response(DataSerializer.data,status=status.HTTP_200_OK)
     except:
         return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
+ # get single order
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetOrder(requst,pk):
+    try:
+        orders=Order.objects.filter(id=int(pk)).prefetch_related('suborderorder')
+        # orders=orders.filter(suborderorder__status='ordering')
+        # .filter(suborderorder__status='ordering')
+        # print(orders)
+        DataSerializer=OrderSerializer(orders,many=True)
+        if(len(DataSerializer.data)==1):
+            return Response(DataSerializer.data,status=status.HTTP_200_OK)
+        else:
+            return Response({'detail':f'sorry we havent  order {pk}'},status=status.HTTP_204_NO_CONTENT)
+
+    except:
+        return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
  
 # all routes
 @api_view(['GET'])
