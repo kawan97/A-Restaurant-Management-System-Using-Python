@@ -3,8 +3,9 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+
 from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer
-from app.models import Item,Order,SubOrder
+from app.models import Item,Order,SubOrder,Table
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -104,6 +105,19 @@ def GetSubOrder(requst,pk):
     except:
         return Response({'detail':f'sorry we havent sub order {pk}'},status=status.HTTP_204_NO_CONTENT)
  
+# add single Sub Order
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def AddSubOrder(requst,pk):
+    try:
+        order=Order.objects.get(id=int(pk))
+        newSubOrder=SubOrder(status='ordering',User=requst.user,Order=order,Table=order.Table)
+        newSubOrder.save()
+        DataSerializer=SubOrderSerializer(newSubOrder,many=False)
+        return Response({'detail':f'you successfully add one sub order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+    except:
+        return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+
 # all routes
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
