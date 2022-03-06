@@ -33,7 +33,7 @@ class SubItem(models.Model):
     Item=models.ForeignKey(Item,on_delete=models.CASCADE,null=True, blank=True, related_name='subitem')
     item_price=models.CharField(max_length=64)
     def __str__(self):
-        return self.name
+        return self.name+' id='+str(self.id)
     class Meta:
         ordering = ['Item']
 

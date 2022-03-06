@@ -17,7 +17,11 @@ class SubItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubItem
         fields ='__all__'
-
+class OrderItemSerializer(serializers.ModelSerializer):
+    SubItem=SubItemSerializer(many=False,read_only=True)
+    class Meta:
+        model = OrderItem
+        fields ='__all__'
 class ItemSerializer(serializers.ModelSerializer):
     subitem=SubItemSerializer(many=True,read_only=True)
     class Meta:

@@ -1,11 +1,13 @@
+from urllib import request
 from rest_framework import status
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 
-from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer
-from app.models import Item,Order,SubOrder,Table
+
+from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer
+from app.models import Item,Order,SubOrder,OrderItem,SubItem
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -115,6 +117,22 @@ def AddSubOrder(requst,pk):
         newSubOrder.save()
         DataSerializer=SubOrderSerializer(newSubOrder,many=False)
         return Response({'detail':f'you successfully add one sub order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+    except:
+        return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+# add single item to single Sub Order
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def AddOrderItem(requst,pk):
+    try:
+        FormData=requst.POST
+        subItemId=FormData['subitemid']
+        subitem=SubItem.objects.get(id=int(subItemId))
+        suborder=SubOrder.objects.get(id=int(pk))
+        neworderitem=OrderItem(User=requst.user,Order=suborder.Order,Table=suborder.Table,SubOrder=suborder,SubItem=subitem)
+        neworderitem.save()
+        # print(neworderitem)
+        DataSerializer=OrderItemSerializer(neworderitem,many=False)
+        return Response({'detail':f'you successfully add one order item ','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
