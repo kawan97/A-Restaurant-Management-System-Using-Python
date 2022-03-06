@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 
 from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer
-from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action
+from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -150,6 +150,21 @@ def UpdateSubOrderStatus(requst,pk):
         return Response({'detail':f'you successfully update sub order status','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+
+# update single  order status
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def UpdateOrderStatus(requst,pk):
+    if True:
+        order=Order.objects.get(id=int(pk))
+        order.status='payed'
+        # order.save()
+        DataSerializer=OrderSerializer(order,many=False)
+        newAction=Payment(Order=order,User=requst.user,total='333')
+        # newAction.save()
+        return Response({'detail':f'you successfully pay order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+    # except:
+    #     return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
 # add single item to single Sub Order
 @api_view(['POST'])
