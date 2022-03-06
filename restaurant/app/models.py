@@ -99,7 +99,7 @@ FEEDBACK_STATUS_CHOICES = (
 )
 class Feedback(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True)
-    Order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='feedbackorder')
+    Order=models.OneToOneField(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='feedbackorder')
     status=models.CharField(max_length=200,default='notanswered',choices=FEEDBACK_STATUS_CHOICES)
     key=models.CharField(max_length=200)
     text = models.TextField(blank=True, null=True)

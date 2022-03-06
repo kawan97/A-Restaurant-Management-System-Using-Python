@@ -64,7 +64,9 @@ def GetItem(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetOrders(requst):
     try:
-        orders=Order.objects.all().prefetch_related('suborderorder')
+        orders=Order.objects.filter(status='notpayed').prefetch_related('suborderorder')
+        # orders=orders.filter(suborderorder__status='ordering')
+        # .filter(suborderorder__status='ordering')
         print(orders)
         DataSerializer=OrderSerializer(orders,many=True)
         return Response(DataSerializer.data,status=status.HTTP_200_OK)
