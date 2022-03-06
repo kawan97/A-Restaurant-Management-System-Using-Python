@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 
 from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer
-from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table
+from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -132,6 +132,22 @@ def AddSubOrder(requst,pk):
         newSubOrder.save()
         DataSerializer=SubOrderSerializer(newSubOrder,many=False)
         return Response({'detail':f'you successfully add one sub order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+    except:
+        return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+# update single sub order status
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def UpdateSubOrderStatus(requst,pk):
+    try:
+        FormData=requst.POST
+        suborderstatus=FormData['suborderstatus']
+        suborder=SubOrder.objects.get(id=int(pk))
+        suborder.status=suborderstatus
+        suborder.save()
+        DataSerializer=SubOrderSerializer(suborder,many=False)
+        newAction=Action(SubOrder=suborder,User=requst.user,type=suborderstatus)
+        newAction.save()
+        return Response({'detail':f'you successfully update sub order status','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
