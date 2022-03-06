@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 
 from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer
-from app.models import Item,Order,SubOrder,OrderItem,SubItem
+from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -107,6 +107,21 @@ def GetSubOrder(requst,pk):
     except:
         return Response({'detail':f'sorry we havent sub order {pk}'},status=status.HTTP_204_NO_CONTENT)
  
+# add single Order
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def AddOrder(requst):
+    try:
+        FormData=requst.POST
+        tableId=FormData['tableid']
+        table=Table.objects.get(id=int(tableId))
+        newOrder=Order(status='notpayed',User=requst.user,Table=table)
+        newOrder.save()
+        DataSerializer=OrderSerializer(newOrder,many=False)
+        return Response({'detail':f'you successfully add one  order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+    except:
+        return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+
 # add single Sub Order
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -119,6 +134,7 @@ def AddSubOrder(requst,pk):
         return Response({'detail':f'you successfully add one sub order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+
 # add single item to single Sub Order
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -145,7 +161,7 @@ def GetRoutes(requst):
         'api/routes/':'see all possable routes',
         'api/users/':"see all users ",
         'api/items/':"see all items",
-         'api/items/<str:pk>':"see one item",
+        'api/items/<str:pk>':"see one item",
         'admin/':"go to admin panel",
 
     }
