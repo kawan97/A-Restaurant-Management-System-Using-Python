@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .serializers import ItemSerializer, UserSerializer,OrderSerializer
-from app.models import Item,Order
+from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer
+from app.models import Item,Order,SubOrder
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -88,7 +88,21 @@ def GetOrder(requst,pk):
             return Response({'detail':f'sorry we havent  order {pk}'},status=status.HTTP_204_NO_CONTENT)
 
     except:
-        return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
+        return Response({'detail':f'sorry we havent  order {pk}'},status=status.HTTP_204_NO_CONTENT)
+  # get single Sub Order
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetSubOrder(requst,pk):
+    try:
+        suborder=SubOrder.objects.filter(id=int(pk))
+        DataSerializer=SubOrderSerializer(suborder,many=True)
+        if(len(DataSerializer.data)==1):
+            return Response(DataSerializer.data,status=status.HTTP_200_OK)
+        else:
+            return Response({'detail':f'sorry we havent sub order {pk}'},status=status.HTTP_204_NO_CONTENT)
+
+    except:
+        return Response({'detail':f'sorry we havent sub order {pk}'},status=status.HTTP_204_NO_CONTENT)
  
 # all routes
 @api_view(['GET'])
