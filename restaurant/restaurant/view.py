@@ -162,7 +162,9 @@ def UpdateOrderStatus(requst,pk):
         DataSerializer=OrderSerializer(order,many=False)
         newAction=Payment(Order=order,User=requst.user,total='333')
         # newAction.save()
-        return Response({'detail':f'you successfully pay order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+        suborderorder=DataSerializer.data['suborderorder']
+        print(len(DataSerializer.data['suborderorder']))
+        return Response({'detail':f'you successfully pay order','data':DataSerializer.data['suborderorder']},status=status.HTTP_201_CREATED)
     # except:
     #     return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
