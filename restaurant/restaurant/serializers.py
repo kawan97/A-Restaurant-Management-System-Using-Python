@@ -43,9 +43,10 @@ class SubOrderSerializer(serializers.ModelSerializer):
     User=UserSerializer(many=False,read_only=True)
     Table=TablerSerializer(many=False,read_only=True)
     Order=SinglOrderIdSerializer(many=False,read_only=True)
+    orderitemsuborder=OrderItemSerializer(many=True,read_only=True)
     class Meta:
         model = SubOrder
-        fields = ['id','status','User','Table','Order']
+        fields = ['id','status','User','Table','Order','orderitemsuborder']
 
 class OrderSerializer(serializers.ModelSerializer):
     User=UserSerializer(many=False,read_only=True)
