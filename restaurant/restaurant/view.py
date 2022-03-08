@@ -115,6 +115,10 @@ def AddOrder(requst):
         FormData=requst.POST
         tableId=FormData['tableid']
         table=Table.objects.get(id=int(tableId))
+        if(table.status=='reserved'):
+            return Response({'detail':f'sorry  table {table.name} is reserved'},status=status.HTTP_400_BAD_REQUEST)
+        table.status='reserved'
+        table.save()
         newOrder=Order(status='notpayed',User=requst.user,Table=table)
         newOrder.save()
         DataSerializer=OrderSerializer(newOrder,many=False)
