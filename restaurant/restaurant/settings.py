@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'channels',
+    'rest_framework', 
     'rest_framework_simplejwt',
-    'app.apps.AppConfig'
+    'app.apps.AppConfig',
+    
 
 ]
 
@@ -116,6 +118,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'restaurant.wsgi.application'
+ASGI_APPLICATION = 'restaurant.asgi.application'
 
 
 # Database
