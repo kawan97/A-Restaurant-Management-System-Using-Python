@@ -169,17 +169,17 @@ def UpdateOrderStatus(requst,pk):
         DataSerializer=OrderSerializer(order,many=False)
         total=0
         suborderorder=DataSerializer.data['suborderorder']
-        print(len(suborderorder))
+        # print(len(suborderorder))
         for i in range(len(suborderorder)):
             item=suborderorder[i]
             # print(len(item['orderitemsuborder']))
             for j in range(len(item['orderitemsuborder'])):
                 newitem=item['orderitemsuborder'][j]
-                print(newitem['SubItem']['item_price'])
+                # print(newitem['SubItem']['item_price'])
                 total=total+int(newitem['SubItem']['item_price'])
             print('--------------')
         newAction=Payment(Order=order,User=requst.user,total=total)
-        print(str(total))
+        # print(str(total))
         newAction.save()
         return Response({'detail':f'you successfully pay order','data':DataSerializer.data['suborderorder']},status=status.HTTP_201_CREATED)
     except:
