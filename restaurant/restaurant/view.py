@@ -155,18 +155,35 @@ def UpdateSubOrderStatus(requst,pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def UpdateOrderStatus(requst,pk):
-    if True:
+    try:
         order=Order.objects.get(id=int(pk))
+        if(order.status=='payed'):
+            return Response({'detail':f'sorry this order is payed'},status=status.HTTP_400_BAD_REQUEST)
         order.status='payed'
-        # order.save()
+        order.save()
+        # order.Table.status='empty'
+        print(order.Table)
+        mytable=Table.objects.get(id=int(order.Table.id))
+        mytable.status='empty'
+        mytable.save()
         DataSerializer=OrderSerializer(order,many=False)
-        newAction=Payment(Order=order,User=requst.user,total='333')
-        # newAction.save()
+        total=0
         suborderorder=DataSerializer.data['suborderorder']
-        print(len(DataSerializer.data['suborderorder']))
+        print(len(suborderorder))
+        for i in range(len(suborderorder)):
+            item=suborderorder[i]
+            # print(len(item['orderitemsuborder']))
+            for j in range(len(item['orderitemsuborder'])):
+                newitem=item['orderitemsuborder'][j]
+                print(newitem['SubItem']['item_price'])
+                total=total+int(newitem['SubItem']['item_price'])
+            print('--------------')
+        newAction=Payment(Order=order,User=requst.user,total=total)
+        print(str(total))
+        newAction.save()
         return Response({'detail':f'you successfully pay order','data':DataSerializer.data['suborderorder']},status=status.HTTP_201_CREATED)
-    # except:
-    #     return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
 # add single item to single Sub Order
 @api_view(['POST'])
