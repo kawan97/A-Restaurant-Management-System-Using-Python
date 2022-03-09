@@ -14,6 +14,9 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
+        from datetime import datetime, timedelta
+        nine_hours_from_now = datetime.now() + timedelta(hours=9)
+
         data = super().validate(attrs)
         refresh = self.get_token(self.user)
         refresh['username']=self.user.username
@@ -22,6 +25,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add extra responses here
         data['username'] = self.user.username
+        data['role'] = self.user.profile.user_role
+        data['expiretoken']=format(nine_hours_from_now, '%H:%M:%S')
         return data
 
 class MyTokenObtainPairView(TokenObtainPairView):
