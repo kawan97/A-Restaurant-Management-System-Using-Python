@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/items/', view.GetItems),
     path('api/items/<str:pk>/', view.GetItem),
     path('api/orders/', view.GetOrders),
+    path('api/tables/', view.GetTables),
     path('api/orders/<str:pk>/', view.GetOrder),
     path('api/suborders/<str:pk>/', view.GetSubOrder),
     path('api/suborder/<str:pk>/', view.AddSubOrder),

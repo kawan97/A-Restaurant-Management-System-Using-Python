@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 
 
-from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer
+from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
 from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment
 
 # login and acces token
@@ -67,6 +67,20 @@ def GetItem(requst,pk):
     except:
          return Response({'detail':'sorry we havent any item'},status=status.HTTP_204_NO_CONTENT)
 
+# get tables
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetTables(requst):
+    if True:
+        tables=Table.objects.all().select_related('suborderorder_set')
+        # tables=tables.filter(suborderorder__status='ordering')
+        # .filter(suborderorder__status='ordering')
+        print(tables)
+        DataSerializer=AllTableSerializer(tables,many=True)
+        return Response(DataSerializer.data,status=status.HTTP_200_OK)
+    # except:
+    #     return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
+
 # get orders
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -80,6 +94,7 @@ def GetOrders(requst):
         return Response(DataSerializer.data,status=status.HTTP_200_OK)
     except:
         return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
+
  # get single order
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

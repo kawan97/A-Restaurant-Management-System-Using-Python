@@ -57,5 +57,10 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['id','status','User','Table','suborderorder']
 
 
+class AllTableSerializer(serializers.ModelSerializer):
+    ordertable=OrderSerializer(many=True,read_only=True)
+    class Meta:
+        model = Table
+        fields = ['id','status','name','ordertable']
 
 
