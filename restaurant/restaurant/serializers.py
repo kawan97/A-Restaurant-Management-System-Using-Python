@@ -61,6 +61,6 @@ class AllTableSerializer(serializers.ModelSerializer):
     ordertable=OrderSerializer(many=True,read_only=True)
     class Meta:
         model = Table
-        fields = ['id','status','name','ordertable']
+        fields = ['id','status','ordertable']
 
 

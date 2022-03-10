@@ -72,10 +72,15 @@ def GetItem(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetTables(requst):
     if True:
-        tables=Table.objects.all().select_related('suborderorder_set')
-        # tables=tables.filter(suborderorder__status='ordering')
+        tables=Table.objects.all().prefetch_related('ordertable')
+        # tables=Table.objects.get(id='2').ordertable.filter(status='notpayed')
+        # tables=Table.objects.filter(ordertable__status__contains='notpayed')
+        tables=tables.filter(ordertable__id='3')
+
+        # .prefetch_related('ordertable_set')
+        # tables=tables.filter(status='empty')
         # .filter(suborderorder__status='ordering')
-        print(tables)
+        # print(tables)
         DataSerializer=AllTableSerializer(tables,many=True)
         return Response(DataSerializer.data,status=status.HTTP_200_OK)
     # except:
