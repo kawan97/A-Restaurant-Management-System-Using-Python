@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 
 
-from .serializers import ItemSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
+from .serializers import ItemSerializer,TableWithOrderSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
 from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment
 
 # login and acces token
@@ -71,20 +71,30 @@ def GetItem(requst,pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def GetTables(requst):
-    if True:
-        tables=Table.objects.all().prefetch_related('ordertable')
+    try:
+        tables=Table.objects.all()
+        # .prefetch_related('ordertable')
         # tables=Table.objects.get(id='2').ordertable.filter(status='notpayed')
         # tables=Table.objects.filter(ordertable__status__contains='notpayed')
-        tables=tables.filter(ordertable__id='3')
-
+        # tables=tables.filter(ordertable__id='3')
         # .prefetch_related('ordertable_set')
         # tables=tables.filter(status='empty')
         # .filter(suborderorder__status='ordering')
         # print(tables)
         DataSerializer=AllTableSerializer(tables,many=True)
         return Response(DataSerializer.data,status=status.HTTP_200_OK)
-    # except:
-    #     return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
+    except:
+        return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
+# get one table with order
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetTable(requst,pk):
+    try:
+        tables=Table.objects.get(id=pk).ordertable.filter(status='notpayed')
+        DataSerializer=OrderSerializer(tables,many=True)
+        return Response(DataSerializer.data,status=status.HTTP_200_OK)
+    except:
+        return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
 
 # get orders
 @api_view(['GET'])
