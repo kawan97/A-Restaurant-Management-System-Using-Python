@@ -154,9 +154,9 @@ def AddOrder(requst):
         if(table.status=='reserved'):
             return Response({'error':f'sorry  table {table.name} is reserved'},status=status.HTTP_400_BAD_REQUEST)
         table.status='reserved'
-        # table.save()
+        table.save()
         newOrder=Order(status='notpayed',User=requst.user,Table=table)
-        # newOrder.save()
+        newOrder.save()
         DataSerializer=OrderSerializer(newOrder,many=False)
         return Response({'success':f'you successfully add one  order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
