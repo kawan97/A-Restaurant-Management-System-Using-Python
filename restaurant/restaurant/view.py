@@ -243,7 +243,6 @@ def AddOrderItem(requst,pk):
 
 # all routes
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def GetRoutes(requst):
     Routes={
         '':'GET:welcome',
