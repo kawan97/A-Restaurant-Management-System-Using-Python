@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-
+import json
 
 from .serializers import ItemSerializer,TableWithOrderSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
 from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment
@@ -147,17 +147,18 @@ def GetSubOrder(requst,pk):
 @permission_classes([IsAuthenticated])
 def AddOrder(requst):
     try:
-        FormData=requst.POST
+        FormData=json.loads((requst.body.decode()))
         tableId=FormData['tableid']
+        print(tableId)
         table=Table.objects.get(id=int(tableId))
         if(table.status=='reserved'):
-            return Response({'detail':f'sorry  table {table.name} is reserved'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error':f'sorry  table {table.name} is reserved'},status=status.HTTP_400_BAD_REQUEST)
         table.status='reserved'
-        table.save()
+        # table.save()
         newOrder=Order(status='notpayed',User=requst.user,Table=table)
-        newOrder.save()
+        # newOrder.save()
         DataSerializer=OrderSerializer(newOrder,many=False)
-        return Response({'detail':f'you successfully add one  order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+        return Response({'success':f'you successfully add one  order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
