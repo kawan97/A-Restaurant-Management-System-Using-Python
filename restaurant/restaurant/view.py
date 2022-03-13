@@ -246,12 +246,23 @@ def AddOrderItem(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetRoutes(requst):
     Routes={
-        '':'welcome',
-        'api/routes/':'see all possable routes',
-        'api/users/':"see all users ",
-        'api/items/':"see all items",
-        'api/items/<str:pk>':"see one item",
-        'admin/':"go to admin panel",
+        '':'GET:welcome',
+        'admin':'go to admin panel',
+        'api/routes/':'GET: see all possable routes',
+        'api/login/':'POST: you can login and get access token body:username,password',
+        'api/users/':"GET:see all users ",
+        'api/items/':"GET:see all items and sub item",
+        'api/items/<str:pk>':"GET:see one item",
+        'api/orders/':"GET:see all orders with suborders and sub items",
+        'api/orders/<str:pk>':"GET:see one order with suborders and sub items",
+        'api/tables/':"GET:see all tables without order",
+        'api/tables/<str:pk>':"GET:see that order on this table and order is notpayed",
+        'api/suborders/<str:pk>':"GET:see one suborder and all order item",
+        'api/suborder/<str:pk>':"POST:add suborder  to one order",
+        'api/orderitem/<str:pk>':"POST:add order item  to one suborder body:subitemid",
+        'api/order/':"POST:add order to one table body:tableid",
+        'api/suborderupdate/<str:pk>':"POST:update suborder status body:suborderstatus",
+        'api/orderupdate/<str:pk>':"POST:update order status",
 
     }
 
