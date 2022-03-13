@@ -171,7 +171,7 @@ def AddSubOrder(requst,pk):
         newSubOrder=SubOrder(status='ordering',User=requst.user,Order=order,Table=order.Table)
         newSubOrder.save()
         DataSerializer=SubOrderSerializer(newSubOrder,many=False)
-        return Response({'detail':f'you successfully add one sub order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+        return Response({'success':f'you successfully add one sub order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 # update single sub order status
