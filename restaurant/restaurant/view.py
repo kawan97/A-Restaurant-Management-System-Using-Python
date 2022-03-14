@@ -50,7 +50,7 @@ def GetItems(requst):
         items=Item.objects.all()
         DataSerializer=ItemSerializer(items,many=True)
         # print(requst.user.profile.date)
-        return Response(DataSerializer.data,status=status.HTTP_200_OK)
+        return Response({'data':DataSerializer.data},status=status.HTTP_200_OK)
     except:
          return Response({'detail':'sorry we havent any item'},status=status.HTTP_204_NO_CONTENT)
   
@@ -179,7 +179,7 @@ def AddSubOrder(requst,pk):
 @permission_classes([IsAuthenticated])
 def UpdateSubOrderStatus(requst,pk):
     try:
-        FormData=requst.POST
+        FormData=json.loads((requst.body.decode()))
         suborderstatus=FormData['suborderstatus']
         suborder=SubOrder.objects.get(id=int(pk))
         suborder.status=suborderstatus
@@ -187,7 +187,7 @@ def UpdateSubOrderStatus(requst,pk):
         DataSerializer=SubOrderSerializer(suborder,many=False)
         newAction=Action(SubOrder=suborder,User=requst.user,type=suborderstatus)
         newAction.save()
-        return Response({'detail':f'you successfully update sub order status','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+        return Response({'success':f'you successfully update sub order status','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
@@ -230,7 +230,7 @@ def UpdateOrderStatus(requst,pk):
 @permission_classes([IsAuthenticated])
 def AddOrderItem(requst,pk):
     try:
-        FormData=requst.POST
+        FormData=json.loads((requst.body.decode()))
         subItemId=FormData['subitemid']
         subitem=SubItem.objects.get(id=int(subItemId))
         suborder=SubOrder.objects.get(id=int(pk))
@@ -238,7 +238,7 @@ def AddOrderItem(requst,pk):
         neworderitem.save()
         # print(neworderitem)
         DataSerializer=OrderItemSerializer(neworderitem,many=False)
-        return Response({'detail':f'you successfully add one order item ','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+        return Response({'success':f'you successfully add one order item ','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
