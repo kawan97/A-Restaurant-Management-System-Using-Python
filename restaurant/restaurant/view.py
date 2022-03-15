@@ -141,6 +141,16 @@ def GetSubOrder(requst,pk):
 
     except:
         return Response({'detail':f'sorry we havent sub order {pk}'},status=status.HTTP_204_NO_CONTENT)
+# get  Sub Order when status = sendingtochef
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetAllSubOrders(requst):
+    try:
+        suborder=SubOrder.objects.filter(status='sendingtochef')
+        DataSerializer=SubOrderSerializer(suborder,many=True)
+        return Response({'success':f'successfully get all sub order','data':DataSerializer.data},status=status.HTTP_200_OK) 
+    except:
+        return Response({'detail':f'sorry we havent sub order '},status=status.HTTP_204_NO_CONTENT)
  
 # add single Order
 @api_view(['POST'])
