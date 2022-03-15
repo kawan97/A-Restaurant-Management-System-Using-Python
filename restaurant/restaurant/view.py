@@ -218,7 +218,7 @@ def UpdateOrderStatus(requst,pk):
     try:
         order=Order.objects.get(id=int(pk))
         if(order.status=='payed'):
-            return Response({'detail':f'sorry this order is payed'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'payed':f'sorry this order is payed'},status=status.HTTP_400_BAD_REQUEST)
         order.status='payed'
         order.save()
         # order.Table.status='empty'
@@ -241,7 +241,7 @@ def UpdateOrderStatus(requst,pk):
         newAction=Payment(Order=order,User=requst.user,total=total)
         # print(str(total))
         newAction.save()
-        return Response({'detail':f'you successfully pay order','data':DataSerializer.data['suborderorder']},status=status.HTTP_201_CREATED)
+        return Response({'success':f'you successfully pay order','data':DataSerializer.data['suborderorder']},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
@@ -277,6 +277,8 @@ def GetRoutes(requst):
         'api/orders/<str:pk>':"GET:see one order with suborders and sub items",
         'api/tables/':"GET:see all tables without order",
         'api/tables/<str:pk>':"GET:see that order on this table and order is notpayed",
+        'api/suborders/':'GET: see all that suborder where status is sendingtochef',
+        'api/waitersuborders/':'GET: see all that suborder where status is orderisready',
         'api/suborders/<str:pk>':"GET:see one suborder and all order item",
         'api/suborder/<str:pk>':"POST:add suborder  to one order",
         'api/orderitem/<str:pk>':"POST:add order item  to one suborder body:subitemid",
