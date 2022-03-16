@@ -22,9 +22,10 @@ class dataConsumer(AsyncJsonWebsocketConsumer):
             {
                 'type': 'send_message',
                 'data': {
-                    'date': data['value'],
+                    'data': data['value'],
                     'event': data['event'],
-                    
+                    'username': data['username'],
+
                 }
             }
         )
