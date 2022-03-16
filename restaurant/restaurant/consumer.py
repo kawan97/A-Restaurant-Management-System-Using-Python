@@ -12,9 +12,9 @@ class dataConsumer(AsyncJsonWebsocketConsumer):
         )
         await self.accept()
         print('IAM CONNECTEd')
-        for i in range(1):
-            # await self.send(json.dumps({'value':randint(1,1000)}))
-            await sleep(1)
+        # for i in range(1):
+        #     await self.send(json.dumps({'value':randint(1,1000)}))
+        #     await sleep(1)
     async def receive(self, text_data):
         data = json.loads(text_data)
         await self.channel_layer.group_send(
