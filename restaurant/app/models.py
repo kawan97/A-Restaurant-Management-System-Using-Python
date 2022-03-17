@@ -128,10 +128,11 @@ class Action(models.Model):
         ordering = ['date']
 
 class Payment(models.Model):
-    date = models.DateTimeField(auto_now_add=True, blank=True)
     Order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentorder')
     User=models.ForeignKey(User,on_delete=models.CASCADE,null=True, blank=True, related_name='paymentuser')
     total=models.CharField(max_length=200,null=False, blank=False)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+
     def __str__(self):
         return 'payment ='+str(self.id)+' ,orderid='+str(self.Order.id)
     class Meta:

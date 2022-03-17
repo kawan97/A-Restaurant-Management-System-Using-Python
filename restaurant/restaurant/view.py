@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 import json
 
-from .serializers import ItemSerializer,TableWithOrderSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
+from .serializers import ItemSerializer,PaymentSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
 from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment
 
 # login and acces token
@@ -161,7 +161,20 @@ def GetAllWaiterSubOrders(requst):
         return Response({'success':f'successfully get all sub order','data':DataSerializer.data},status=status.HTTP_200_OK) 
     except:
         return Response({'detail':f'sorry we havent sub order '},status=status.HTTP_204_NO_CONTENT)
- 
+# get  Sub Order when status = sendingtochef
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetAllPayments(requst,stdate,enddate):
+    try:
+        # payment=Payment.objects.all()
+
+        # payment=Payment.objects.filter(date__gte='2022-03-09',date__lte='2022-03-20')
+        payment=Payment.objects.filter(date__gte=stdate,date__lte=enddate)
+
+        DataSerializer=PaymentSerializer(payment,many=True)
+        return Response({'success':f'successfully get all payment','data':DataSerializer.data},status=status.HTTP_200_OK) 
+    except:
+        return Response({'detail':f'sorry we havent payments '},status=status.HTTP_204_NO_CONTENT)
 # add single Order
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
