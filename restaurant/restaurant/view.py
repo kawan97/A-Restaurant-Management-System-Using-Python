@@ -298,7 +298,7 @@ def GetRoutes(requst):
         'api/order/':"POST:add order to one table body:tableid",
         'api/suborderupdate/<str:pk>':"POST:update suborder status body:suborderstatus",
         'api/orderupdate/<str:pk>':"POST:update order status",
-
+        'api/payments/<str:stdate>/<str:enddate>/':'GET get all payemnt between 2 date',
     }
 
     return Response(Routes,status=status.HTTP_200_OK)

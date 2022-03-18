@@ -67,8 +67,14 @@ class AllTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Table
         fields = ['id','status','name']
+
+class UserWithNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [ 'username']
 class PaymentSerializer(serializers.ModelSerializer):
     Order=SinglOrderIdSerializer(many=False,read_only=True)
+    User=UserWithNameSerializer(many=False,read_only=True)
     # Order=OrderSerializer(many=False,read_only=True)
 
     class Meta:
