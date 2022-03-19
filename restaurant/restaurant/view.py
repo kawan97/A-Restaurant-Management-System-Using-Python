@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 import json
 
-from .serializers import ItemSerializer,ActionSerializer,PaymentSerializer,UserWithNameSerializer ,UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
-from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment
+from .serializers import ItemSerializer,ActionSerializer,EquipmentSerializer,PaymentSerializer,UserWithNameSerializer ,UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
+from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment,Equipment
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -177,7 +177,7 @@ def GetAllWaiterSubOrders(requst):
         return Response({'success':f'successfully get all sub order','data':DataSerializer.data},status=status.HTTP_200_OK) 
     except:
         return Response({'detail':f'sorry we havent sub order '},status=status.HTTP_204_NO_CONTENT)
-# get  Sub Order when status = sendingtochef
+# get all payment by date
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def GetAllPayments(requst,stdate,enddate):
@@ -191,6 +191,19 @@ def GetAllPayments(requst,stdate,enddate):
         return Response({'success':f'successfully get all payment','data':DataSerializer.data},status=status.HTTP_200_OK) 
     except:
         return Response({'detail':f'sorry we havent payments '},status=status.HTTP_204_NO_CONTENT)
+
+# get  all equipment by date
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetAllEquipment(requst,stdate,enddate):
+    try:
+
+        allequipent=Equipment.objects.filter(date__gte=stdate,date__lte=enddate)
+
+        DataSerializer=EquipmentSerializer(allequipent,many=True)
+        return Response({'success':f'successfully get all Equipment','data':DataSerializer.data},status=status.HTTP_200_OK) 
+    except:
+        return Response({'detail':f'sorry we havent Equipment '},status=status.HTTP_204_NO_CONTENT)
 # add single Order
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -210,6 +223,20 @@ def AddOrder(requst):
         return Response({'success':f'you successfully add one  order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
         return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+# add single equipment
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def AddEquipment(requst):
+    if True:
+        FormData=json.loads((requst.body.decode()))
+        name=FormData['name']
+        total=FormData['total']
+        newEquipment=Equipment(name=name,User=requst.user,total=total)
+        newEquipment.save()
+        DataSerializer=EquipmentSerializer(newEquipment,many=False)
+        return Response({'success':f'you successfully add one  Equipment','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+    # except:
+    #     return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
 # add single Sub Order
 @api_view(['POST'])
@@ -316,6 +343,9 @@ def GetRoutes(requst):
         'api/orderupdate/<str:pk>':"POST:update order status",
         'api/payments/<str:stdate>/<str:enddate>/':'GET get all payemnt between 2 date',
         'api/useraction/<str:stdate>/<str:enddate>/<str:userid>/':'see action by date and user',
+        'api/equipment/':'POST : add one  equipment body:name,total',
+        'api/equipments/<str:stdate>/<str:enddate>/':'GET : see all  equipment by date',
+
     }
 
     return Response(Routes,status=status.HTTP_200_OK)
