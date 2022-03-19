@@ -182,11 +182,7 @@ def GetAllWaiterSubOrders(requst):
 @permission_classes([IsAuthenticated])
 def GetAllPayments(requst,stdate,enddate):
     try:
-        # payment=Payment.objects.all()
-
-        # payment=Payment.objects.filter(date__gte='2022-03-09',date__lte='2022-03-20')
         payment=Payment.objects.filter(date__gte=stdate,date__lte=enddate)
-
         DataSerializer=PaymentSerializer(payment,many=True)
         return Response({'success':f'successfully get all payment','data':DataSerializer.data},status=status.HTTP_200_OK) 
     except:
@@ -197,9 +193,7 @@ def GetAllPayments(requst,stdate,enddate):
 @permission_classes([IsAuthenticated])
 def GetAllEquipment(requst,stdate,enddate):
     try:
-
         allequipent=Equipment.objects.filter(date__gte=stdate,date__lte=enddate)
-
         DataSerializer=EquipmentSerializer(allequipent,many=True)
         return Response({'success':f'successfully get all Equipment','data':DataSerializer.data},status=status.HTTP_200_OK) 
     except:
