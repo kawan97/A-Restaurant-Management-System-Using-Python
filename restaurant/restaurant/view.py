@@ -137,7 +137,7 @@ def GetOrder(requst,pk):
         # print(orders)
         DataSerializer=OrderSerializer(orders,many=True)
         if(len(DataSerializer.data)==1):
-            return Response(DataSerializer.data,status=status.HTTP_200_OK)
+            return Response({'success':'you get order','data':DataSerializer.data},status=status.HTTP_200_OK)
         else:
             return Response({'detail':f'sorry we havent  order {pk}'},status=status.HTTP_204_NO_CONTENT)
 
@@ -151,7 +151,7 @@ def GetSubOrder(requst,pk):
         suborder=SubOrder.objects.filter(id=int(pk))
         DataSerializer=SubOrderSerializer(suborder,many=True)
         if(len(DataSerializer.data)==1):
-            return Response(DataSerializer.data,status=status.HTTP_200_OK)
+            return Response({'success':'you get that sub order','data':DataSerializer.data},status=status.HTTP_200_OK)
         else:
             return Response({'detail':f'sorry we havent sub order {pk}'},status=status.HTTP_204_NO_CONTENT)
 
@@ -315,6 +315,7 @@ def GetRoutes(requst):
         'api/suborderupdate/<str:pk>':"POST:update suborder status body:suborderstatus",
         'api/orderupdate/<str:pk>':"POST:update order status",
         'api/payments/<str:stdate>/<str:enddate>/':'GET get all payemnt between 2 date',
+        'api/useraction/<str:stdate>/<str:enddate>/<str:userid>/':'see action by date and user',
     }
 
     return Response(Routes,status=status.HTTP_200_OK)
