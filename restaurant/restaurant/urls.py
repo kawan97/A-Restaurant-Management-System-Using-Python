@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/suborderupdate/<str:pk>/', view.UpdateSubOrderStatus),
     path('api/orderupdate/<str:pk>/', view.UpdateOrderStatus),
     path('api/payments/<str:stdate>/<str:enddate>/', view.GetAllPayments),
+    path('api/useraction/<str:stdate>/<str:enddate>/<str:userid>/', view.GetUserActions),
 
 
 ]

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from app.models import Profile,Item,SubItem,Order,OrderItem,Table,SubOrder,Payment
+from app.models import Profile,Item,SubItem,Order,OrderItem,Table,SubOrder,Payment,Action
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -71,7 +71,7 @@ class AllTableSerializer(serializers.ModelSerializer):
 class UserWithNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [ 'username']
+        fields = [ 'username','id']
 class PaymentSerializer(serializers.ModelSerializer):
     Order=SinglOrderIdSerializer(many=False,read_only=True)
     User=UserWithNameSerializer(many=False,read_only=True)
@@ -79,4 +79,12 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
+        fields = '__all__'
+
+class ActionSerializer(serializers.ModelSerializer):
+    User=UserWithNameSerializer(many=False,read_only=True)
+    # Order=OrderSerializer(many=False,read_only=True)
+
+    class Meta:
+        model = Action
         fields = '__all__'

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 import json
 
-from .serializers import ItemSerializer,PaymentSerializer, UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
+from .serializers import ItemSerializer,ActionSerializer,PaymentSerializer,UserWithNameSerializer ,UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
 from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment
 
 # login and acces token
@@ -36,11 +36,27 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def GetUsers(requst):
-    Users=User.objects.all()
-    DataSerializer=UserSerializer(Users,many=True)
-    print(requst.user.profile.date)
+    try:
+        Users=User.objects.all()
+        DataSerializer=UserWithNameSerializer(Users,many=True)
+        # print(requst.user.profile.date)
+        return Response({'success':'that is all users','data':DataSerializer.data},status=status.HTTP_200_OK)
+    except:
+        return Response({'detail':'sorry you have error'},status=status.HTTP_204_NO_CONTENT)
 
-    return Response(DataSerializer.data,status=status.HTTP_200_OK)
+# get  Sub Order when status = sendingtochef
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def GetUserActions(requst,stdate,enddate,userid):
+    try:
+        # payment=Payment.objects.all()
+        # payment=Payment.objects.filter(date__gte='2022-03-09',date__lte='2022-03-20')
+        action=Action.objects.filter(date__gte=stdate,date__lte=enddate,User__id=userid)
+
+        DataSerializer=ActionSerializer(action,many=True)
+        return Response({'success':f'successfully get all action','data':DataSerializer.data},status=status.HTTP_200_OK) 
+    except:
+        return Response({'detail':f'sorry we havent action '},status=status.HTTP_204_NO_CONTENT)
 
 # get all Items
 @api_view(['GET'])
