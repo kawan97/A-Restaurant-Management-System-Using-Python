@@ -203,7 +203,7 @@ def GetAllEquipment(requst,stdate,enddate):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def GetMonthlyReport(requst,year,month):
-    if True:
+    try:
         from datetime import datetime
         startdate=datetime.fromisoformat(year+'-'+month+'-01')
         enddate=add_months(startdate,1)
@@ -223,9 +223,9 @@ def GetMonthlyReport(requst,year,month):
         sumofequipent=0
         for i in range(len(EquipmentDataSerializer.data)):
             sumofequipent=sumofequipent+int(EquipmentDataSerializer.data[i]['total'])
-        return Response({'success':f'successfully get all Equipment','data':{'user':{'total':sumofuser,'length':len(ProfileDataSerializer.data)},'equipent':{'total':sumofequipent,'length':len(EquipmentDataSerializer.data)} ,'payment':{'total':sumofpayments,'length':len(PaymentDataSerializer.data)}}},status=status.HTTP_200_OK) 
-    # except:
-    #     return Response({'detail':f'sorry we havent Equipment '},status=status.HTTP_204_NO_CONTENT)
+        return Response({'success':f'successfully get report','data':{'user':{'total':sumofuser,'length':len(ProfileDataSerializer.data)},'equipent':{'total':sumofequipent,'length':len(EquipmentDataSerializer.data)} ,'payment':{'total':sumofpayments,'length':len(PaymentDataSerializer.data)}}},status=status.HTTP_200_OK) 
+    except:
+        return Response({'detail':f'sorry we havent Equipment '},status=status.HTTP_204_NO_CONTENT)
 def add_months(sourcedate, months):
     import datetime
     import calendar
