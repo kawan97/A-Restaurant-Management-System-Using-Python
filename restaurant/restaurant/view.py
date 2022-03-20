@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 import json
 
-from .serializers import ItemSerializer,ActionSerializer,EquipmentSerializer,PaymentSerializer,UserWithNameSerializer ,UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
-from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment,Equipment
+from .serializers import ItemSerializer,ProfileSerializer,ActionSerializer,EquipmentSerializer,PaymentSerializer,UserWithNameSerializer ,UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
+from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment,Equipment,Profile
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -198,6 +198,43 @@ def GetAllEquipment(requst,stdate,enddate):
         return Response({'success':f'successfully get all Equipment','data':DataSerializer.data},status=status.HTTP_200_OK) 
     except:
         return Response({'detail':f'sorry we havent Equipment '},status=status.HTTP_204_NO_CONTENT)
+
+#Get Monthly Report
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetMonthlyReport(requst,year,month):
+    if True:
+        from datetime import datetime
+        startdate=datetime.fromisoformat(year+'-'+month+'-01')
+        enddate=add_months(startdate,1)
+        enddate=datetime.fromisoformat(str(enddate))
+        payment=Payment.objects.filter(date__gte=startdate,date__lte=enddate)
+        PaymentDataSerializer=PaymentSerializer(payment,many=True)
+        equipent=Equipment.objects.filter(date__gte=startdate,date__lte=enddate)
+        EquipmentDataSerializer=EquipmentSerializer(equipent,many=True)
+        profile=Profile.objects.filter(status='active')
+        ProfileDataSerializer=ProfileSerializer(profile,many=True) 
+        sumofpayments=0
+        for i in range(len(PaymentDataSerializer.data)):
+            sumofpayments=sumofpayments+int(PaymentDataSerializer.data[i]['total'])
+        sumofuser=0
+        for i in range(len(ProfileDataSerializer.data)):
+            sumofuser=sumofuser+int(ProfileDataSerializer.data[i]['user_salary'])
+        sumofequipent=0
+        for i in range(len(EquipmentDataSerializer.data)):
+            sumofequipent=sumofequipent+int(EquipmentDataSerializer.data[i]['total'])
+        return Response({'success':f'successfully get all Equipment','data':{'user':{'total':sumofuser,'length':len(ProfileDataSerializer.data)},'equipent':{'total':sumofequipent,'length':len(EquipmentDataSerializer.data)} ,'payment':{'total':sumofpayments,'length':len(PaymentDataSerializer.data)}}},status=status.HTTP_200_OK) 
+    # except:
+    #     return Response({'detail':f'sorry we havent Equipment '},status=status.HTTP_204_NO_CONTENT)
+def add_months(sourcedate, months):
+    import datetime
+    import calendar
+    month = sourcedate.month - 1 + months
+    year = sourcedate.year + month // 12
+    month = month % 12 + 1
+    day = min(sourcedate.day, calendar.monthrange(year,month)[1])
+    return datetime.date(year, month, day)
+
 # add single Order
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -339,6 +376,7 @@ def GetRoutes(requst):
         'api/useraction/<str:stdate>/<str:enddate>/<str:userid>/':'see action by date and user',
         'api/equipment/':'POST : add one  equipment body:name,total',
         'api/equipments/<str:stdate>/<str:enddate>/':'GET : see all  equipment by date',
+        'api/monthlyreport/<str:year>/<str:month>/':'get monthly report',
 
     }
 
