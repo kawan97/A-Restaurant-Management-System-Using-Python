@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 import json
 
-from .serializers import ItemSerializer,ProfileSerializer,ActionSerializer,EquipmentSerializer,PaymentSerializer,UserWithNameSerializer ,UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
-from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment,Equipment,Profile
+from .serializers import ItemSerializer,FeedbackSerializer,ProfileSerializer,ActionSerializer,EquipmentSerializer,PaymentSerializer,UserWithNameSerializer ,UserSerializer,OrderSerializer,SubOrderSerializer,OrderItemSerializer,AllTableSerializer
+from app.models import Item,Order,SubOrder,OrderItem,SubItem,Table,Action,Payment,Equipment,Profile,Feedback
 
 # login and acces token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -240,6 +240,7 @@ def add_months(sourcedate, months):
 @permission_classes([IsAuthenticated])
 def AddOrder(requst):
     try:
+        import random
         FormData=json.loads((requst.body.decode()))
         tableId=FormData['tableid']
         print(tableId)
@@ -250,6 +251,8 @@ def AddOrder(requst):
         table.save()
         newOrder=Order(status='notpayed',User=requst.user,Table=table)
         newOrder.save()
+        newFeedback=Feedback(Order=newOrder,key=random.randrange(1000000, 99999999, 1))
+        newFeedback.save()
         DataSerializer=OrderSerializer(newOrder,many=False)
         return Response({'success':f'you successfully add one  order','data':DataSerializer.data},status=status.HTTP_201_CREATED)
     except:
@@ -258,7 +261,7 @@ def AddOrder(requst):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def AddEquipment(requst):
-    if True:
+    try:
         FormData=json.loads((requst.body.decode()))
         name=FormData['name']
         total=FormData['total']
@@ -266,8 +269,26 @@ def AddEquipment(requst):
         newEquipment.save()
         DataSerializer=EquipmentSerializer(newEquipment,many=False)
         return Response({'success':f'you successfully add one  Equipment','data':DataSerializer.data},status=status.HTTP_201_CREATED)
-    # except:
-    #     return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
+
+# add single feedback
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def AddFeedback(requst,orderid,key):
+    try:
+        FormData=json.loads((requst.body.decode()))
+        userfeedback=FormData['text']
+        feedback=Feedback.objects.get(Order__id=int(orderid),key=key)
+        if(feedback.status=='answered'):
+            return Response({'answered':f'sorry you add feedback to this order'},status=status.HTTP_400_BAD_REQUEST)
+        feedback.status='answered'
+        feedback.text=userfeedback
+        feedback.save()
+        DataSerializer=FeedbackSerializer(feedback,many=False)
+        return Response({'success':f'you successfully add feedback','data':DataSerializer.data},status=status.HTTP_201_CREATED)
+    except:
+        return Response({'detail':f'sorry you have an error'},status=status.HTTP_400_BAD_REQUEST)
 
 # add single Sub Order
 @api_view(['POST'])

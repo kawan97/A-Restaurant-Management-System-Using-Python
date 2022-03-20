@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from app.models import Profile,Item,SubItem,Order,OrderItem,Table,SubOrder,Payment,Action,Equipment
+from app.models import Profile,Item,Feedback,SubItem,Order,OrderItem,Table,SubOrder,Payment,Action,Equipment
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,4 +95,9 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Equipment
+        fields = '__all__'
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
         fields = '__all__'

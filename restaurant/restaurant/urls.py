@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/equipment/', view.AddEquipment),
     path('api/equipments/<str:stdate>/<str:enddate>/', view.GetAllEquipment),
     path('api/monthlyreport/<str:year>/<str:month>/', view.GetMonthlyReport),
+    path('api/feedback/<str:orderid>/<str:key>/', view.AddFeedback),
 
 
 
