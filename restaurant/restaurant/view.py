@@ -274,7 +274,6 @@ def AddEquipment(requst):
 
 # add single feedback
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def AddFeedback(requst,orderid,key):
     try:
         FormData=json.loads((requst.body.decode()))
