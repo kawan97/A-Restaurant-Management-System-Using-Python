@@ -32,11 +32,16 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+
+
+# -----------------------------
 # get all users
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def GetUsers(requst):
     try:
+        if requst.user.profile.user_role != 'admin':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         Users=User.objects.all()
         DataSerializer=UserWithNameSerializer(Users,many=True)
         # print(requst.user.profile.date)
@@ -46,7 +51,7 @@ def GetUsers(requst):
 
 # get  Sub Order when status = sendingtochef
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def GetUserActions(requst,stdate,enddate,userid):
     try:
         # payment=Payment.objects.all()
