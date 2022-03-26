@@ -49,11 +49,13 @@ def GetUsers(requst):
     except:
         return Response({'detail':'sorry you have error'},status=status.HTTP_204_NO_CONTENT)
 
-# get  Sub Order when status = sendingtochef
+# get  users actions
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def GetUserActions(requst,stdate,enddate,userid):
     try:
+        if requst.user.profile.user_role != 'admin':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         # payment=Payment.objects.all()
         # payment=Payment.objects.filter(date__gte='2022-03-09',date__lte='2022-03-20')
         action=Action.objects.filter(date__gte=stdate,date__lte=enddate,User__id=userid)
@@ -68,6 +70,8 @@ def GetUserActions(requst,stdate,enddate,userid):
 @permission_classes([IsAuthenticated])
 def GetItems(requst):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         items=Item.objects.all()
         DataSerializer=ItemSerializer(items,many=True)
         # print(requst.user.profile.date)
@@ -81,6 +85,8 @@ def GetItems(requst):
 @permission_classes([IsAuthenticated])
 def GetItem(requst,pk):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         items=Item.objects.get(id=pk)
         DataSerializer=ItemSerializer(items,many=False)
         # print(requst.user.profile.date)
@@ -93,6 +99,8 @@ def GetItem(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetTables(requst):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         tables=Table.objects.all()
         # .prefetch_related('ordertable')
         # tables=Table.objects.get(id='2').ordertable.filter(status='notpayed')
@@ -111,6 +119,8 @@ def GetTables(requst):
 @permission_classes([IsAuthenticated])
 def GetTable(requst,pk):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         tables=Table.objects.get(id=pk).ordertable.filter(status='notpayed')
         DataSerializer=OrderSerializer(tables,many=True)
         return Response(DataSerializer.data,status=status.HTTP_200_OK)
@@ -122,6 +132,8 @@ def GetTable(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetOrders(requst):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         orders=Order.objects.filter(status='notpayed').prefetch_related('suborderorder')
         # orders=orders.filter(suborderorder__status='ordering')
         # .filter(suborderorder__status='ordering')
@@ -136,6 +148,8 @@ def GetOrders(requst):
 @permission_classes([IsAuthenticated])
 def GetOrder(requst,pk):
     try:
+        if requst.user.profile.user_role != 'admin'  or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         orders=Order.objects.filter(id=int(pk)).prefetch_related('suborderorder')
         # orders=orders.filter(suborderorder__status='ordering')
         # .filter(suborderorder__status='ordering')
@@ -153,6 +167,8 @@ def GetOrder(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetSubOrder(requst,pk):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         suborder=SubOrder.objects.filter(id=int(pk))
         DataSerializer=SubOrderSerializer(suborder,many=True)
         if(len(DataSerializer.data)==1):
@@ -167,6 +183,8 @@ def GetSubOrder(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetAllSubOrders(requst):
     try:
+        if requst.user.profile.user_role != 'chef':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         suborder=SubOrder.objects.filter(status='sendingtochef')
         DataSerializer=SubOrderSerializer(suborder,many=True)
         return Response({'success':f'successfully get all sub order','data':DataSerializer.data},status=status.HTTP_200_OK) 
@@ -177,6 +195,8 @@ def GetAllSubOrders(requst):
 @permission_classes([IsAuthenticated])
 def GetAllWaiterSubOrders(requst):
     try:
+        if requst.user.profile.user_role != 'waiter':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         suborder=SubOrder.objects.filter(status='orderisready')
         DataSerializer=SubOrderSerializer(suborder,many=True)
         return Response({'success':f'successfully get all sub order','data':DataSerializer.data},status=status.HTTP_200_OK) 
@@ -187,6 +207,8 @@ def GetAllWaiterSubOrders(requst):
 @permission_classes([IsAuthenticated])
 def GetAllPayments(requst,stdate,enddate):
     try:
+        if requst.user.profile.user_role != 'admin':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         payment=Payment.objects.filter(date__gte=stdate,date__lte=enddate)
         DataSerializer=PaymentSerializer(payment,many=True)
         return Response({'success':f'successfully get all payment','data':DataSerializer.data},status=status.HTTP_200_OK) 
@@ -198,6 +220,8 @@ def GetAllPayments(requst,stdate,enddate):
 @permission_classes([IsAuthenticated])
 def GetAllEquipment(requst,stdate,enddate):
     try:
+        if requst.user.profile.user_role != 'admin':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         allequipent=Equipment.objects.filter(date__gte=stdate,date__lte=enddate)
         DataSerializer=EquipmentSerializer(allequipent,many=True)
         return Response({'success':f'successfully get all Equipment','data':DataSerializer.data},status=status.HTTP_200_OK) 
@@ -209,6 +233,8 @@ def GetAllEquipment(requst,stdate,enddate):
 @permission_classes([IsAuthenticated])
 def GetMonthlyReport(requst,year,month):
     try:
+        if requst.user.profile.user_role != 'admin':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         from datetime import datetime
         startdate=datetime.fromisoformat(year+'-'+month+'-01')
         enddate=add_months(startdate,1)
@@ -245,6 +271,8 @@ def add_months(sourcedate, months):
 @permission_classes([IsAuthenticated])
 def AddOrder(requst):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         import random
         FormData=json.loads((requst.body.decode()))
         tableId=FormData['tableid']
@@ -267,6 +295,8 @@ def AddOrder(requst):
 @permission_classes([IsAuthenticated])
 def AddEquipment(requst):
     try:
+        if requst.user.profile.user_role != 'admin':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         FormData=json.loads((requst.body.decode()))
         name=FormData['name']
         total=FormData['total']
@@ -299,6 +329,8 @@ def AddFeedback(requst,orderid,key):
 @permission_classes([IsAuthenticated])
 def AddSubOrder(requst,pk):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         order=Order.objects.get(id=int(pk))
         newSubOrder=SubOrder(status='ordering',User=requst.user,Order=order,Table=order.Table)
         newSubOrder.save()
@@ -313,6 +345,15 @@ def UpdateSubOrderStatus(requst,pk):
     try:
         FormData=json.loads((requst.body.decode()))
         suborderstatus=FormData['suborderstatus']
+        if(suborderstatus =='sendingtochef'):
+            if requst.user.profile.user_role != 'captain':
+                return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if(suborderstatus =='orderisready'):
+            if requst.user.profile.user_role != 'chef':
+                return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if(suborderstatus =='waiterserving'):
+            if requst.user.profile.user_role != 'waiter':
+                return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         suborder=SubOrder.objects.get(id=int(pk))
         suborder.status=suborderstatus
         suborder.save()
@@ -328,6 +369,8 @@ def UpdateSubOrderStatus(requst,pk):
 @permission_classes([IsAuthenticated])
 def UpdateOrderStatus(requst,pk):
     try:
+        if requst.user.profile.user_role != 'admin':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         order=Order.objects.get(id=int(pk))
         if(order.status=='payed'):
             return Response({'payed':f'sorry this order is payed'},status=status.HTTP_400_BAD_REQUEST)
@@ -362,6 +405,8 @@ def UpdateOrderStatus(requst,pk):
 @permission_classes([IsAuthenticated])
 def AddOrderItem(requst,pk):
     try:
+        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+            return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         FormData=json.loads((requst.body.decode()))
         subItemId=FormData['subitemid']
         subitem=SubItem.objects.get(id=int(subItemId))
