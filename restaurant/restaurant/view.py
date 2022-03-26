@@ -70,7 +70,7 @@ def GetUserActions(requst,stdate,enddate,userid):
 @permission_classes([IsAuthenticated])
 def GetItems(requst):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         items=Item.objects.all()
         DataSerializer=ItemSerializer(items,many=True)
@@ -85,7 +85,7 @@ def GetItems(requst):
 @permission_classes([IsAuthenticated])
 def GetItem(requst,pk):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         items=Item.objects.get(id=pk)
         DataSerializer=ItemSerializer(items,many=False)
@@ -99,7 +99,7 @@ def GetItem(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetTables(requst):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         tables=Table.objects.all()
         # .prefetch_related('ordertable')
@@ -119,7 +119,7 @@ def GetTables(requst):
 @permission_classes([IsAuthenticated])
 def GetTable(requst,pk):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         tables=Table.objects.get(id=pk).ordertable.filter(status='notpayed')
         DataSerializer=OrderSerializer(tables,many=True)
@@ -132,7 +132,7 @@ def GetTable(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetOrders(requst):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         orders=Order.objects.filter(status='notpayed').prefetch_related('suborderorder')
         # orders=orders.filter(suborderorder__status='ordering')
@@ -148,7 +148,7 @@ def GetOrders(requst):
 @permission_classes([IsAuthenticated])
 def GetOrder(requst,pk):
     try:
-        if requst.user.profile.user_role != 'admin'  or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin'  and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         orders=Order.objects.filter(id=int(pk)).prefetch_related('suborderorder')
         # orders=orders.filter(suborderorder__status='ordering')
@@ -167,7 +167,7 @@ def GetOrder(requst,pk):
 @permission_classes([IsAuthenticated])
 def GetSubOrder(requst,pk):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         suborder=SubOrder.objects.filter(id=int(pk))
         DataSerializer=SubOrderSerializer(suborder,many=True)
@@ -271,7 +271,7 @@ def add_months(sourcedate, months):
 @permission_classes([IsAuthenticated])
 def AddOrder(requst):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         import random
         FormData=json.loads((requst.body.decode()))
@@ -329,7 +329,7 @@ def AddFeedback(requst,orderid,key):
 @permission_classes([IsAuthenticated])
 def AddSubOrder(requst,pk):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         order=Order.objects.get(id=int(pk))
         newSubOrder=SubOrder(status='ordering',User=requst.user,Order=order,Table=order.Table)
@@ -405,7 +405,7 @@ def UpdateOrderStatus(requst,pk):
 @permission_classes([IsAuthenticated])
 def AddOrderItem(requst,pk):
     try:
-        if requst.user.profile.user_role != 'admin' or requst.user.profile.user_role != 'captain':
+        if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         FormData=json.loads((requst.body.decode()))
         subItemId=FormData['subitemid']
