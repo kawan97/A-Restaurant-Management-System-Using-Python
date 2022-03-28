@@ -56,7 +56,18 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['id','status','User','Table','suborderorder']
 
-
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = '__all__'
+class OrderWithFeedbackSerializer(serializers.ModelSerializer):
+    User=UserSerializer(many=False,read_only=True)
+    Table=TablerSerializer(many=False,read_only=True)
+    feedbackorder=FeedbackSerializer(many=False,read_only=True)
+    suborderorder=SubOrderSerializer(many=True,read_only=True)
+    class Meta:
+        model = Order
+        fields = ['id','status','User','Table','suborderorder','feedbackorder']
 class TableWithOrderSerializer(serializers.ModelSerializer):
     ordertable=OrderSerializer(many=True,read_only=True)
     class Meta:
