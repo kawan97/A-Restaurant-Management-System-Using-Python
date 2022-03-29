@@ -34,7 +34,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 # ----------------------------------
 
-
+@api_view(['GET'])
 def FinalReport(requst,pk,mytoken):
     # encoded_jwt = jwt.encode({"some": "payload"}, "secret", algorithm="HS256")
     # jwt.decode(encoded_jwt, "secret", algorithms=["HS256"])
