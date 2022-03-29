@@ -34,56 +34,68 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 # ----------------------------------
 
-from django.shortcuts import render
-from django.http import FileResponse
-from fpdf import FPDF
-def FinalReport(requst,pk):
-    sales = [
-    ]
-    order=Order.objects.get(id=int(pk))
-    DataSerializer=OrderWithFeedbackSerializer(order,many=False)
-    total=0
-    # print(DataSerializer.data['feedbackorder']['key'])
-    suborderorder=DataSerializer.data['suborderorder']
-    for i in range(len(suborderorder)):
-        item=suborderorder[i]
-        singlesub=0
-        # print(item['id'])
-        sales.append({'item':'Sub Order : '+str(item['id']),'amount':''})
-        # print(len(item['orderitemsuborder']))
-        for j in range(len(item['orderitemsuborder'])):
-            newitem=item['orderitemsuborder'][j]
-            # print(newitem['SubItem']['item_price'])
-            total=total+int(newitem['SubItem']['item_price'])
-            singlesub=singlesub+int(newitem['SubItem']['item_price'])
-            sales.append({'item':newitem['SubItem']['name'],'amount':str(newitem['SubItem']['item_price'])})
-        sales.append({'item':'   ','amount':''})
-        sales.append({'item':'Sub Order Total','amount':str(singlesub)})
-        singlesub=0
-        sales.append({'item':'-------','amount':'--------'})
-    sales.append({'item':'   ','amount':'    '})
-    sales.append({'item':'Order Total','amount':str(total)})
-    if(DataSerializer.data['feedbackorder']):
-        sales.append({'item':'-------','amount':'--------'})
-        sales.append({'item':'For feedback you can viseted here','amount':''})
-        sales.append({'item':'/addfeedback/'+str(pk)+'/'+str(DataSerializer.data['feedbackorder']['key'])+'/','amount':''})
 
-    # print(sales)
+def FinalReport(requst,pk,mytoken):
+    # encoded_jwt = jwt.encode({"some": "payload"}, "secret", algorithm="HS256")
+    # jwt.decode(encoded_jwt, "secret", algorithms=["HS256"])
+    from django.shortcuts import render
+    from django.http import FileResponse
+    from fpdf import FPDF
+    import jwt
+    from django.conf import settings
+    try:
+        myScret=settings.SECRET_KEY
+        mytoken='dsds'
+        jwt.decode(mytoken, myScret, algorithms=["HS256"])
+        sales = [
+        ]
+        order=Order.objects.get(id=int(pk))
+        DataSerializer=OrderWithFeedbackSerializer(order,many=False)
+        total=0
+        # print(DataSerializer.data['feedbackorder']['key'])
+        suborderorder=DataSerializer.data['suborderorder']
+        for i in range(len(suborderorder)):
+            item=suborderorder[i]
+            singlesub=0
+            # print(item['id'])
+            sales.append({'item':'Sub Order : '+str(item['id']),'amount':''})
+            # print(len(item['orderitemsuborder']))
+            for j in range(len(item['orderitemsuborder'])):
+                newitem=item['orderitemsuborder'][j]
+                # print(newitem['SubItem']['item_price'])
+                total=total+int(newitem['SubItem']['item_price'])
+                singlesub=singlesub+int(newitem['SubItem']['item_price'])
+                sales.append({'item':newitem['SubItem']['name'],'amount':str(newitem['SubItem']['item_price'])})
+            sales.append({'item':'   ','amount':''})
+            sales.append({'item':'Sub Order Total','amount':str(singlesub)})
+            singlesub=0
+            sales.append({'item':'-------','amount':'--------'})
+        sales.append({'item':'   ','amount':'    '})
+        sales.append({'item':'Order Total','amount':str(total)})
+        if(DataSerializer.data['feedbackorder']):
+            sales.append({'item':'-------','amount':'--------'})
+            sales.append({'item':'For feedback you can viseted here','amount':''})
+            sales.append({'item':'/addfeedback/'+str(pk)+'/'+str(DataSerializer.data['feedbackorder']['key'])+'/','amount':''})
 
-    pdf = FPDF('P', 'mm', 'A5')
-    pdf.add_page()
-    pdf.set_font('courier', 'B', 16)
-    pdf.cell(40, 10, 'Report For Order :'+str(pk),0,1)
-    pdf.cell(40, 10, '',0,1)
-    pdf.set_font('courier', '', 10)
-    pdf.cell(200, 8, f"{'Item'.ljust(20)} {'Amount'.rjust(0)}", 0, 1)
-    pdf.line(10, 30, 150, 30)
-    pdf.line(10, 38, 150, 38)
-    for line in sales:
-        pdf.cell(200, 8, f"{line['item'].ljust(20)} {line['amount'].rjust(0)}", 0, 1)
-    pdf.output('report.pdf', 'F')
-    # return FileResponse(open('report.pdf', 'rb'), as_attachment=True, content_type='application/pdf')
-    return FileResponse(open('report.pdf', 'rb'), content_type='application/pdf')
+        # print(sales)
+
+        pdf = FPDF('P', 'mm', 'A5')
+        pdf.add_page()
+        pdf.set_font('courier', 'B', 16)
+        pdf.cell(40, 10, 'Report For Order :'+str(pk),0,1)
+        pdf.cell(40, 10, '',0,1)
+        pdf.set_font('courier', '', 10)
+        pdf.cell(200, 8, f"{'Item'.ljust(20)} {'Amount'.rjust(0)}", 0, 1)
+        pdf.line(10, 30, 150, 30)
+        pdf.line(10, 38, 150, 38)
+        for line in sales:
+            pdf.cell(200, 8, f"{line['item'].ljust(20)} {line['amount'].rjust(0)}", 0, 1)
+        pdf.output('report.pdf', 'F')
+        # return FileResponse(open('report.pdf', 'rb'), as_attachment=True, content_type='application/pdf')
+        return FileResponse(open('report.pdf', 'rb'), content_type='application/pdf')
+    except:
+        return Response({'detail':'sorry you have error'},status=status.HTTP_204_NO_CONTENT)
+
 # -----------------------------
 # get all users
 @api_view(['GET'])

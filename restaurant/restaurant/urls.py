@@ -7,7 +7,7 @@ from . import view
 #     TokenObtainPairView,
 # )
 urlpatterns = [
-    path('finalreport/<str:pk>/', view.FinalReport),
+    path('finalreport/<str:pk>/<str:mytoken>/', view.FinalReport),
     path('', view.GetHome),
     path('api/login/', view.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('admin/', admin.site.urls),
