@@ -36,7 +36,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 # ----------------------------------
 
 @api_view(['GET'])
-def FinalReport(requst,pk,mytoken):
+def FinalReport(requst,pk,mytoken,myurl):
     # encoded_jwt = jwt.encode({"some": "payload"}, "secret", algorithm="HS256")
     # jwt.decode(encoded_jwt, "secret", algorithms=["HS256"])
     from django.shortcuts import render
@@ -78,7 +78,7 @@ def FinalReport(requst,pk,mytoken):
         if(DataSerializer.data['feedbackorder']):
             sales.append({'item':'-------','amount':'--------'})
             sales.append({'item':'For feedback you can viseted here','amount':''})
-            sales.append({'item':'/addfeedback/'+str(pk)+'/'+str(DataSerializer.data['feedbackorder']['key'])+'/','amount':''})
+            sales.append({'item':myurl+'/addfeedback/'+str(pk)+'/'+str(DataSerializer.data['feedbackorder']['key'])+'/','amount':''})
 
         # print(sales)
 
