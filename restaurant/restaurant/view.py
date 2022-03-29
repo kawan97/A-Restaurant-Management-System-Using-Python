@@ -20,6 +20,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         refresh = self.get_token(self.user)
         refresh['username']=self.user.username
+        refresh['role']=self.user.profile.user_role
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
 
@@ -45,7 +46,10 @@ def FinalReport(requst,pk,mytoken):
     from django.conf import settings
     try:
         myScret=settings.SECRET_KEY
-        jwt.decode(mytoken, myScret, algorithms=["HS256"])
+        myinfo=jwt.decode(mytoken, myScret, algorithms=["HS256"])
+        if(myinfo['role']!='admin'):
+            return Response({'detail':'sorry you are not allowed to see that page'},status=status.HTTP_204_NO_CONTENT)
+        # print(myinfo)
         sales = [
         ]
         order=Order.objects.get(id=int(pk))
