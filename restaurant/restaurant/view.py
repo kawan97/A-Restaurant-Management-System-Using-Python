@@ -77,22 +77,27 @@ def FinalReport(requst,pk,mytoken,myurl):
         sales.append({'item':'Order Total','amount':str(total)})
         if(DataSerializer.data['feedbackorder']):
             sales.append({'item':'-------','amount':'--------'})
-            sales.append({'item':'For feedback you can viseted here','amount':''})
-            sales.append({'item':myurl+'/addfeedback/'+str(pk)+'/'+str(DataSerializer.data['feedbackorder']['key'])+'/','amount':''})
 
         # print(sales)
 
         pdf = FPDF('P', 'mm', 'A5')
-        pdf.add_page()
-        pdf.set_font('courier', 'B', 16)
+        pdf.add_page(format=(80 * (1 - i/10), 175 * (1 - i/10)))
+        pdf.set_font('courier', 'B', 12)
         pdf.cell(40, 10, 'Report For Order :'+str(pk),0,1)
-        pdf.cell(40, 10, '',0,1)
+        pdf.cell(40, 10, 'On table :'+DataSerializer.data['Table']['name'],0,1)
+        # pdf.cell(40, 10, '',0,1)
         pdf.set_font('courier', '', 10)
         pdf.cell(200, 8, f"{'Item'.ljust(20)} {'Amount'.rjust(0)}", 0, 1)
         pdf.line(10, 30, 150, 30)
         pdf.line(10, 38, 150, 38)
         for line in sales:
             pdf.cell(200, 8, f"{line['item'].ljust(20)} {line['amount'].rjust(0)}", 0, 1)
+        teee='for feedback you can vesited here'
+        pdf.set_font('courier', '', 9)
+
+        pdf.cell(200, 8, f"{teee.ljust(20)}", 0, 1)
+        pdf.cell(200, 8, f"{myurl+'/addfeedback/'.ljust(20)}", 0, 1)
+        pdf.cell(200, 8, f"{str(pk)+'/'+str(DataSerializer.data['feedbackorder']['key'])+'/'.ljust(20)}", 0, 1)
         pdf.output('report.pdf', 'F')
         # return FileResponse(open('report.pdf', 'rb'), as_attachment=True, content_type='application/pdf')
         return FileResponse(open('report.pdf', 'rb'), content_type='application/pdf')
