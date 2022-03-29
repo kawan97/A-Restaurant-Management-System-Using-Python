@@ -45,7 +45,6 @@ def FinalReport(requst,pk,mytoken):
     from django.conf import settings
     try:
         myScret=settings.SECRET_KEY
-        mytoken='dsds'
         jwt.decode(mytoken, myScret, algorithms=["HS256"])
         sales = [
         ]
