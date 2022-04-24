@@ -192,7 +192,7 @@ def GetTable(requst,pk):
         if requst.user.profile.user_role != 'admin' and requst.user.profile.user_role != 'captain':
             return Response({'permission':'sorry you are not allowed to perform that action','role':requst.user.profile.user_role},status=status.HTTP_405_METHOD_NOT_ALLOWED)
         tables=Table.objects.get(id=pk).ordertable.filter(status='notpayed')
-        DataSerializer=OrderSerializer(tables,many=True)
+        DataSerializer=OrderWithFeedbackSerializer(tables,many=True)
         return Response(DataSerializer.data,status=status.HTTP_200_OK)
     except:
         return Response({'detail':'sorry we havent any order'},status=status.HTTP_204_NO_CONTENT)
