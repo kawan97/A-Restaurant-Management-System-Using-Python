@@ -81,7 +81,7 @@ def FinalReport(requst,pk,mytoken,myurl):
         # print(sales)
 
         pdf = FPDF('P', 'mm', 'A5')
-        pdf.add_page(format=(80 * (1 - i/10), 175 * (1 - i/10)))
+        pdf.add_page(format=(90 * (1 - i/10), 175 * (1 - i/10)))
         pdf.set_font('courier', 'B', 12)
         pdf.cell(40, 10, 'Report For Order :'+str(pk),0,1)
         pdf.cell(40, 10, 'On table :'+DataSerializer.data['Table']['name'],0,1)
